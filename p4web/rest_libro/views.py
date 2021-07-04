@@ -1,28 +1,26 @@
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.response import response
+from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from django.views.decorators.csrf import csrf_exempt
 from core.models import Libro
-from .serializers import libroSerializer
-
+from .serializers import LibroSerializer
 @ csrf_exempt
 @api_view(['GET','POST'])
 def lista_libros(request):
-    
     if request.method =='GET':
         libro = Libro.objects.all()
-        serializer = libroSerializer( libro, many=true)
-        return response(serializer.data)
+        serializer = LibroSerializer(libro, many = True)
+        return Response(serializer.data)
     elif request.method == 'POST':
-        data = JSONParser() .parse(request)
-        serializer = libroSerializer(data=data)
+        data = JSONParser().parse(request)
+        serializer = LibroSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return   response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                    
 
 
